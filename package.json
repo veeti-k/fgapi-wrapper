@@ -2,5 +2,9 @@
   "name": "fgapi-wrapper",
   "description": "FGApi wrapper",
   "author": "Veeti K veetik@protonmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "discord.js": "^13.3.1"
+  }
 }
