@@ -1,7 +1,7 @@
 import { Method } from "axios";
-import { apiBaseUrl } from "../config/vars";
 
 let apiToken = "";
+let apiBaseUrl = "";
 
 export const getAxiosConfig = (method: Method, url: string, body?: any) => {
   return {
@@ -17,4 +17,8 @@ export const getAxiosConfig = (method: Method, url: string, body?: any) => {
 
 export const setApiToken = (token: string) => {
   apiToken = token;
+};
+
+export const setApiBaseUrl = (url: string) => {
+  apiBaseUrl = url;
 };

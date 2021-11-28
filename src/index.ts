@@ -2,7 +2,7 @@ import * as games from "./games";
 import * as guilds from "./guilds";
 import * as logs from "./logs";
 import * as notifications from "./notifications";
-import { setApiToken } from "./config";
+import { setApiBaseUrl, setApiToken } from "./config";
 
 export const api = {
   routes: {
@@ -12,4 +12,5 @@ export const api = {
     notifications,
   },
   setToken: setApiToken,
+  setBaseUrl: setApiBaseUrl,
 };
