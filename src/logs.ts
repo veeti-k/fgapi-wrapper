@@ -1,49 +1,68 @@
 import axios from "axios";
 import { CommandInteraction, Guild } from "discord.js";
 import { getAxiosConfig } from "./config";
+import { apiErrorHandler } from "./errorHandler";
+import { Command } from "./interfaces/Command";
+import { Event } from "./interfaces/Event";
+import { valid } from "./validation/index";
 
-export const sendCmd = async (interaction: CommandInteraction): Promise<void> => {
-  const guildOwner = await interaction.guild!.fetchOwner();
+export const send = {
+  command: async (interaction: CommandInteraction) => {
+    if (!interaction.guild) return;
+    const guildOwner = await interaction.guild.fetchOwner();
 
-  const commandLog = {
-    commandName: interaction.commandName,
-    sender: {
-      tag: interaction.user.tag,
-      id: interaction.user.id,
-    },
-    guild: {
-      name: interaction.guild!.name,
-      id: interaction.guild!.id,
-      memberCount: interaction.guild!.memberCount,
-      owner: {
-        tag: guildOwner.user.tag,
-        id: guildOwner.user.id,
+    const command: Command = {
+      name: interaction.commandName,
+      sender: {
+        tag: interaction.user.tag,
+        id: interaction.user.id,
       },
-    },
-  };
-
-  const axiosConfig = getAxiosConfig("POST", "/logs/cmd", commandLog);
-
-  axios(axiosConfig).catch((err) => console.log(err));
-};
-
-export const sendEvent = async (guild: Guild, eventName: string): Promise<void> => {
-  const guildOwner = await guild.fetchOwner();
-
-  const eventLog = {
-    eventName,
-    guild: {
-      name: guild!.name,
-      id: guild!.id,
-      memberCount: guild!.memberCount,
-      owner: {
-        tag: guildOwner.user,
-        id: guildOwner.user.id,
+      guild: {
+        name: interaction.guild.name,
+        id: interaction.guild.id,
+        memberCount: interaction.guild.memberCount,
+        owner: {
+          tag: guildOwner.user.tag,
+          id: guildOwner.user.id,
+        },
       },
-    },
-  };
+    };
 
-  const axiosConfig = getAxiosConfig("POST", "/logs/event", eventLog);
+    if (!valid.log.command(command)) return;
 
-  axios(axiosConfig).catch((err) => console.log(err));
+    const axiosConfig = getAxiosConfig("POST", "/logs/cmd", command);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  },
+
+  event: async (guild: Guild, eventName: string) => {
+    const guildOwner = await guild.fetchOwner();
+
+    const event: Event = {
+      name: eventName,
+      guild: {
+        name: guild!.name,
+        id: guild!.id,
+        memberCount: guild!.memberCount,
+        owner: {
+          tag: guildOwner.user.tag,
+          id: guildOwner.user.id,
+        },
+      },
+    };
+
+    if (!valid.log.event(event)) return;
+
+    const axiosConfig = getAxiosConfig("POST", "/logs/event", event);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  },
 };

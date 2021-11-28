@@ -7,7 +7,7 @@ export interface Command {
   guild: {
     name: string;
     id: string;
-    memberCount: string;
+    memberCount: number;
     owner: {
       tag: string;
       id: string;
