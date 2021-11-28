@@ -1,5 +1,5 @@
 export interface Event {
-  name: string;
+  type: EventTypes;
   guild: {
     name: string;
     id: string;
@@ -9,4 +9,16 @@ export interface Event {
       id: string;
     };
   };
+}
+
+export enum EventTypes {
+  roleSet = "ROLE_SET",
+  roleRemoved = "ROLE_REMOVED",
+  channelSet = "CHANNEL_SET",
+  channelRemoved = "CHANNEL_REMOVED",
+  languageSet = "LANGUAGE_SET",
+  emojiSet = "EMOJI_SET",
+  emojiRemoved = "EMOJI_REMOVED",
+  joined = "JOINED",
+  left = "LEFT",
 }

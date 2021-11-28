@@ -1,4 +1,4 @@
-import { Event } from "../interfaces/Event";
+import { Event, EventTypes } from "../interfaces/Event";
 
 export default (event: Event) => {
   const propError = validateProps(event);
@@ -17,7 +17,9 @@ export default (event: Event) => {
 };
 
 const validateProps = (event: Event) => {
-  if (!event.name) return "'name' was not provided";
+  if (!event.type) return "'type' was not provided";
+
+  if (!Object.values(EventTypes).includes(event.type)) return "'type' is not a valid event type";
 
   if (!event.guild) return "'guild' was not provided";
   if (!event.guild.id) return "'guild.id' was not provided";
@@ -29,7 +31,7 @@ const validateProps = (event: Event) => {
 };
 
 const validatePropTypes = (event: Event) => {
-  if (typeof event.name !== "string") return "'name' must be the type of string";
+  if (typeof event.type !== "string") return "'type' must be the type of string";
 
   if (typeof event.guild.id !== "string") return "'guild.id' must be the type of string";
   if (typeof event.guild.name !== "string") return "'guild.name' must be the type of string";

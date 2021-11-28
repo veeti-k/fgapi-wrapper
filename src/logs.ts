@@ -3,7 +3,7 @@ import { CommandInteraction, Guild } from "discord.js";
 import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { Command } from "./interfaces/Command";
-import { Event } from "./interfaces/Event";
+import { Event, EventTypes } from "./interfaces/Event";
 import { valid } from "./validation/index";
 
 export const send = {
@@ -39,11 +39,11 @@ export const send = {
     }
   },
 
-  event: async (guild: Guild, eventName: string) => {
+  event: async (guild: Guild, eventType: EventTypes) => {
     const guildOwner = await guild.fetchOwner();
 
     const event: Event = {
-      name: eventName,
+      type: eventType,
       guild: {
         name: guild!.name,
         id: guild!.id,
