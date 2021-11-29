@@ -6,3 +6,7 @@ export interface Guild {
   emoji: string | null;
   language: string;
 }
+
+export interface SetChGuild extends Guild {
+  channelId: string;
+}
