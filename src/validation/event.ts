@@ -4,14 +4,9 @@ export default (event: Event) => {
   const propError = validateProps(event);
   const propTypeError = validatePropTypes(event);
 
-  if (propError) {
-    console.log(new Error("Event prop error" + propError));
-    return false;
-  }
-  if (propTypeError) {
-    console.log(new TypeError("Event proptype error" + propError));
-    return false;
-  }
+  if (propError) throw new Error("Event validation error" + propError);
+
+  if (propTypeError) throw new TypeError("Event validation error" + propError);
 
   return true;
 };

@@ -12,13 +12,13 @@ export interface Event {
 }
 
 export enum EventTypes {
-  roleSet = "ROLE_SET",
-  roleRemoved = "ROLE_REMOVED",
-  channelSet = "CHANNEL_SET",
-  channelRemoved = "CHANNEL_REMOVED",
-  languageSet = "LANGUAGE_SET",
-  emojiSet = "EMOJI_SET",
-  emojiRemoved = "EMOJI_REMOVED",
-  joined = "JOINED",
-  left = "LEFT",
+  ROLE_SET = "ROLE_SET",
+  ROLE_REMOVED = "ROLE_REMOVED",
+  CHANNEL_SET = "CHANNEL_SET",
+  CHANNEL_REMOVED = "CHANNEL_REMOVED",
+  LANGUAGE_SET = "LANGUAGE_SET",
+  EMOJI_SET = "EMOJI_SET",
+  EMOJI_REMOVED = "EMOJI_REMOVED",
+  JOINED = "JOINED",
+  LEFT = "LEFT",
 }

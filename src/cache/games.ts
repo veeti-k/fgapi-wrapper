@@ -1,148 +1,214 @@
-import { api } from "../index";
+import axios from "axios";
+import { getAxiosConfig } from "../config";
+import { apiErrorHandler } from "../errorHandler";
+import { ApiSettings } from "../interfaces/ApiSettings";
 import { Game } from "../interfaces/Game";
-import { GameCache } from "../interfaces/GameCache";
+import { valid } from "../validation/index";
 
 const tenMin = 1000 * 60 * 10;
 
-const gameCache: GameCache = {
-  free: {
-    updatedAt: 0,
-    games: [],
-  },
-  upcoming: {
-    updatedAt: 0,
-    games: [],
-  },
+export class Games {
+  private freeGamesUpdatedAt: number;
+  private freeGames: Array<Game>;
+  private upGamesUpdatedAt: number;
+  private upGames: Array<Game>;
 
-  epic: {
-    free: {
-      updatedAt: 0,
-      games: [],
-    },
-    upcoming: {
-      updatedAt: 0,
-      games: [],
-    },
-  },
-};
+  constructor(private settings: ApiSettings) {
+    this.freeGamesUpdatedAt = 0;
+    this.freeGames = [];
+    this.upGamesUpdatedAt = 0;
+    this.upGames = [];
+  }
 
-export const get = {
-  free: (): Game[] => {
-    return gameCache.free.games;
-  },
+  /**
+   * Gets the free games from cache
+   * @returns An Array of {@link Game} objects
+   */
+  get free(): Array<Game> {
+    return this.freeGames;
+  }
 
-  upcoming: (): Game[] => {
-    return gameCache.upcoming.games;
-  },
+  /**
+   * Gets the upcoming games from cache
+   * @returns An Array of {@link Game} objects
+   */
+  get upcoming(): Array<Game> {
+    return this.upGames;
+  }
 
-  epic: {
-    free: (): Game[] => {
-      return gameCache.epic.free.games;
-    },
-
-    upcoming: (): Game[] => {
-      return gameCache.epic.upcoming.games;
-    },
-  },
-};
-
-export const set = {
-  free: (games: Game[]) => {
-    gameCache.free = {
-      updatedAt: new Date().getTime(),
-      games,
-    };
-  },
-
-  upcoming: (games: Game[]) => {
-    gameCache.upcoming = {
-      updatedAt: new Date().getTime(),
-      games,
-    };
-  },
-
-  epic: {
-    free: (games: Game[]) => {
-      gameCache.epic.free = {
-        updatedAt: new Date().getTime(),
-        games,
-      };
-    },
-
-    upcoming: (games: Game[]) => {
-      gameCache.upcoming = {
-        updatedAt: new Date().getTime(),
-        games,
-      };
-    },
-  },
-};
-
-export const has = {
-  free: (): boolean => {
+  /**
+   * Sets the free games to cache
+   */
+  set free(games: Game[]) {
     const now = new Date().getTime();
 
-    if (!gameCache.free.updatedAt) return false;
-    if (gameCache.free.updatedAt + tenMin > now) return true;
+    if (!valid.games(games)) return;
 
-    return false;
-  },
+    this.freeGamesUpdatedAt = now;
+    this.freeGames = games;
+  }
 
-  upcoming: (): boolean => {
+  /**
+   * Sets the upcoming games to cache
+   */
+  set upcoming(games: Game[]) {
     const now = new Date().getTime();
 
-    if (!gameCache.upcoming.updatedAt) return false;
-    if (gameCache.upcoming.updatedAt + tenMin > now) return true;
+    if (!valid.games(games)) return;
+
+    this.upGamesUpdatedAt = now;
+    this.upGames = games;
+  }
+
+  /**
+   * Returns true if free games cache is less than 10 minutes old
+   */
+  hasFree() {
+    const now = new Date().getTime();
+
+    if (!this.freeGamesUpdatedAt) return false;
+    if (this.freeGamesUpdatedAt + tenMin > now) return true;
 
     return false;
-  },
+  }
 
-  epic: {
-    free: (): boolean => {
+  /**
+   * Returns true if upcoming games cache is less than 10 minutes old
+   */
+  hasUpcoming() {
+    const now = new Date().getTime();
+
+    if (!this.upGamesUpdatedAt) return false;
+    if (this.upGamesUpdatedAt + tenMin > now) return true;
+
+    return false;
+  }
+
+  async update() {
+    const freeConfig = getAxiosConfig(this.settings, "GET", "/games/free");
+    const upConfig = getAxiosConfig(this.settings, "GET", "/games/up");
+
+    let free: Game[] = [];
+    let upcoming: Game[] = [];
+
+    try {
+      free = (await axios(freeConfig)).data;
+      upcoming = (await axios(upConfig)).data;
+
+      if (!valid.games(free)) return;
+      if (!valid.games(upcoming)) return;
+
       const now = new Date().getTime();
 
-      if (!gameCache.epic.free.updatedAt) return false;
-      if (gameCache.epic.free.updatedAt + tenMin > now) return true;
+      this.freeGames = free;
+      this.freeGamesUpdatedAt = now;
+      this.upGames = upcoming;
+      this.upGamesUpdatedAt = now;
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
+}
 
-      return false;
-    },
+export class Epic {
+  private freeGamesUpdatedAt: number;
+  private freeGames: Array<Game>;
+  private upGamesUpdatedAt: number;
+  private upGames: Array<Game>;
 
-    upcoming: (): boolean => {
+  constructor(private settings: ApiSettings) {
+    this.freeGamesUpdatedAt = 0;
+    this.freeGames = [];
+    this.upGamesUpdatedAt = 0;
+    this.upGames = [];
+  }
+
+  /**
+   * Gets the free games from cache
+   * @returns An Array of {@link Game} objects
+   */
+  get free(): Array<Game> {
+    return this.freeGames;
+  }
+
+  /**
+   * Gets the upcoming games from cache
+   * @returns An Array of {@link Game} objects
+   */
+  get upcoming(): Array<Game> {
+    return this.upGames;
+  }
+
+  /**
+   * Sets the free games to cache
+   */
+  set free(games: Game[]) {
+    const now = new Date().getTime();
+
+    if (!valid.games(games)) return;
+
+    this.freeGamesUpdatedAt = now;
+    this.freeGames = games;
+  }
+
+  /**
+   * Sets the upcoming games to cache
+   */
+  set upcoming(games: Game[]) {
+    const now = new Date().getTime();
+
+    if (!valid.games(games)) return;
+
+    this.upGamesUpdatedAt = now;
+    this.upGames = games;
+  }
+
+  /**
+   * Returns true if free games cache is less than 10 minutes old
+   */
+  hasFree() {
+    const now = new Date().getTime();
+
+    if (!this.freeGamesUpdatedAt) return false;
+    if (this.freeGamesUpdatedAt + tenMin > now) return true;
+
+    return false;
+  }
+
+  /**
+   * Returns true if upcoming games cache is less than 10 minutes old
+   */
+  hasUpcoming() {
+    const now = new Date().getTime();
+
+    if (!this.upGamesUpdatedAt) return false;
+    if (this.upGamesUpdatedAt + tenMin > now) return true;
+
+    return false;
+  }
+
+  async update() {
+    const freeConfig = getAxiosConfig(this.settings, "GET", "/games/epic/free");
+    const upConfig = getAxiosConfig(this.settings, "GET", "/games/epic/up");
+
+    let free: Game[] = [];
+    let upcoming: Game[] = [];
+
+    try {
+      free = (await axios(freeConfig)).data;
+      upcoming = (await axios(upConfig)).data;
+
+      if (!valid.games(free)) return;
+      if (!valid.games(upcoming)) return;
+
       const now = new Date().getTime();
 
-      if (!gameCache.epic.upcoming.updatedAt) return false;
-      if (gameCache.epic.upcoming.updatedAt + tenMin > now) return true;
-
-      return false;
-    },
-  },
-};
-
-export const update = async () => {
-  const free = await api.routes.games.get.free();
-  const upcoming = await api.routes.games.get.upcoming();
-  const freeEpic = await api.routes.games.get.epic.upcoming();
-  const upcomingEpic = await api.routes.games.get.epic.upcoming();
-
-  const now = new Date().getTime();
-
-  gameCache.free = {
-    updatedAt: now,
-    games: free,
-  };
-
-  gameCache.upcoming = {
-    updatedAt: now,
-    games: upcoming,
-  };
-
-  gameCache.epic.free = {
-    updatedAt: now,
-    games: freeEpic,
-  };
-
-  gameCache.epic.upcoming = {
-    updatedAt: now,
-    games: upcomingEpic,
-  };
-};
+      this.freeGames = free;
+      this.freeGamesUpdatedAt = now;
+      this.upGames = upcoming;
+      this.upGamesUpdatedAt = now;
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
+}

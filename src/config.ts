@@ -1,24 +1,14 @@
 import { Method } from "axios";
+import { ApiSettings } from "./interfaces/ApiSettings";
 
-let apiToken = "";
-let apiBaseUrl = "";
-
-export const getAxiosConfig = (method: Method, url: string, body?: any) => {
+export const getAxiosConfig = (settings: ApiSettings, method: Method, url: string, body?: any) => {
   return {
     method,
-    url: `${apiBaseUrl}${url}`,
+    url: `${settings.baseUrl}${url}`,
     headers: {
-      Authorization: `token ${apiToken}`,
+      Authorization: `token ${settings.token}`,
       "Content-Type": "application/json",
     },
     data: body,
   };
-};
-
-export const setApiToken = (token: string) => {
-  apiToken = token;
-};
-
-export const setApiBaseUrl = (url: string) => {
-  apiBaseUrl = url;
 };
