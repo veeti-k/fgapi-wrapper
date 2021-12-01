@@ -5,9 +5,9 @@ export default (games: Game[]): boolean => {
     const propError = validateProps(game);
     const propTypeError = validatePropTypes(game);
 
-    if (propError) throw new Error("Game validation error" + propError);
+    if (propError) console.log(new Error(`Game validation error: ${propError}`));
 
-    if (propTypeError) throw new TypeError("Game validation error" + propError);
+    if (propTypeError) console.log(new TypeError(`Game type validation error: ${propTypeError}`));
   }
 
   return true;
@@ -18,10 +18,10 @@ const validateProps = (game: Game): string | undefined => {
   if (!game.imgUrl) return "'imgUrl' was not provided";
   if (!game.start) return "'start' was not provided";
   if (!game.end) return "'end' was not provided";
-  if (!game.sent) return "'sent' was not provided";
-  if (!game.confirmed) return "'confirmed' was not provided";
+  if (!Object.keys(game).includes("sent")) return "'sent' was not provided";
+  if (!Object.keys(game).includes("confirmed")) return "'confirmed' was not provided";
 
-  if (!game.store) return "'store' was not provided";
+  if (!Object.keys(game).includes("store")) return "'store' was not provided";
   if (!game.store.name) return "'store.name' was not provided";
   if (!game.store.url) return "'store.url' was not provided";
 
