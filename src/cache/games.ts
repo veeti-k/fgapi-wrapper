@@ -36,11 +36,8 @@ export class Games {
     return this.upGames;
   }
 
-  /**
-   * Sets the free games to cache
-   */
   set free(games: Game[]) {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!valid.games(games)) return;
 
@@ -48,11 +45,8 @@ export class Games {
     this.freeGames = games;
   }
 
-  /**
-   * Sets the upcoming games to cache
-   */
   set upcoming(games: Game[]) {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!valid.games(games)) return;
 
@@ -64,7 +58,7 @@ export class Games {
    * Returns true if free games cache is less than 10 minutes old
    */
   hasFree() {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!this.freeGamesUpdatedAt) return false;
     if (this.freeGamesUpdatedAt + tenMin > now) return true;
@@ -76,7 +70,7 @@ export class Games {
    * Returns true if upcoming games cache is less than 10 minutes old
    */
   hasUpcoming() {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!this.upGamesUpdatedAt) return false;
     if (this.upGamesUpdatedAt + tenMin > now) return true;
@@ -88,17 +82,14 @@ export class Games {
     const freeConfig = getAxiosConfig(this.settings, "GET", "/games/free");
     const upConfig = getAxiosConfig(this.settings, "GET", "/games/up");
 
-    let free: Game[] = [];
-    let upcoming: Game[] = [];
-
     try {
-      free = (await axios(freeConfig)).data;
-      upcoming = (await axios(upConfig)).data;
+      const free = (await axios(freeConfig)).data;
+      const upcoming = (await axios(upConfig)).data;
 
       if (!valid.games(free)) return;
       if (!valid.games(upcoming)) return;
 
-      const now = new Date().getTime();
+      const now = Date.now();
 
       this.freeGames = free;
       this.freeGamesUpdatedAt = now;
@@ -139,11 +130,8 @@ export class Epic {
     return this.upGames;
   }
 
-  /**
-   * Sets the free games to cache
-   */
   set free(games: Game[]) {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!valid.games(games)) return;
 
@@ -151,11 +139,8 @@ export class Epic {
     this.freeGames = games;
   }
 
-  /**
-   * Sets the upcoming games to cache
-   */
   set upcoming(games: Game[]) {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!valid.games(games)) return;
 
@@ -167,7 +152,7 @@ export class Epic {
    * Returns true if free games cache is less than 10 minutes old
    */
   hasFree() {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!this.freeGamesUpdatedAt) return false;
     if (this.freeGamesUpdatedAt + tenMin > now) return true;
@@ -179,7 +164,7 @@ export class Epic {
    * Returns true if upcoming games cache is less than 10 minutes old
    */
   hasUpcoming() {
-    const now = new Date().getTime();
+    const now = Date.now();
 
     if (!this.upGamesUpdatedAt) return false;
     if (this.upGamesUpdatedAt + tenMin > now) return true;
@@ -191,17 +176,14 @@ export class Epic {
     const freeConfig = getAxiosConfig(this.settings, "GET", "/games/epic/free");
     const upConfig = getAxiosConfig(this.settings, "GET", "/games/epic/up");
 
-    let free: Game[] = [];
-    let upcoming: Game[] = [];
-
     try {
-      free = (await axios(freeConfig)).data;
-      upcoming = (await axios(upConfig)).data;
+      const free = (await axios(freeConfig)).data;
+      const upcoming = (await axios(upConfig)).data;
 
       if (!valid.games(free)) return;
       if (!valid.games(upcoming)) return;
 
-      const now = new Date().getTime();
+      const now = Date.now();
 
       this.freeGames = free;
       this.freeGamesUpdatedAt = now;
