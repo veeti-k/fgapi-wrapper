@@ -23,7 +23,7 @@ class SetEndpoints {
       channelId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "POST", `/guilds/${guildId}/channel`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/channel`, data);
 
     await axios(axiosConfig);
   }
@@ -33,7 +33,7 @@ class SetEndpoints {
       roleId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "POST", `/guilds/${guildId}/role`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/role`, data);
 
     await axios(axiosConfig);
   }
@@ -43,7 +43,7 @@ class SetEndpoints {
       emoji,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "POST", `/guilds/${guildId}/emoji`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/emoji`, data);
 
     await axios(axiosConfig);
   }
@@ -53,7 +53,7 @@ class SetEndpoints {
       language,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "POST", `/guilds/${guildId}/emoji`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/emoji`, data);
 
     await axios(axiosConfig);
   }
