@@ -34,20 +34,12 @@ export class Games {
 }
 
 class GetEndpoints {
-  games: NotEpicGames;
   epic: EpicGames;
-
-  constructor(private settings: ApiSettings, cache: GameCache) {
-    this.games = new NotEpicGames(this.settings, cache);
-    this.epic = new EpicGames(this.settings, cache);
-  }
-}
-
-class NotEpicGames {
   private cache: GameCache;
 
   constructor(private settings: ApiSettings, cache: GameCache) {
     this.cache = cache;
+    this.epic = new EpicGames(this.settings, this.cache);
   }
 
   /**
@@ -84,6 +76,7 @@ class NotEpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
+      this.cache.games.free = games;
     } catch (err: any) {
       apiErrorHandler(err);
       return this.cache.games.free;
@@ -107,6 +100,7 @@ class NotEpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
+      this.cache.games.upcoming = games;
     } catch (err: any) {
       apiErrorHandler(err);
       return this.cache.games.upcoming;
@@ -175,6 +169,7 @@ class EpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
+      this.cache.epic.free = games;
     } catch (err: any) {
       apiErrorHandler(err);
       return this.cache.games.free;
@@ -198,6 +193,7 @@ class EpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
+      this.cache.epic.upcoming = games;
     } catch (err: any) {
       apiErrorHandler(err);
       return this.cache.games.upcoming;
