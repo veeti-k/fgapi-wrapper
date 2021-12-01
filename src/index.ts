@@ -23,5 +23,3 @@ export class TheApi {
     this.logs = new Logs(this.settings);
   }
 }
-
-const Api = new TheApi({ token: "test", baseUrl: "test" });
