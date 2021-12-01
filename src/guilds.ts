@@ -126,7 +126,7 @@ class GetEndpoints {
    * @returns An array of {@link SetChGuild}
    */
   async setCh(): Promise<SetChGuild[]> {
-    const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/setCh`);
+    const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/setch`);
 
     const guild = (await axios(axiosConfig)).data;
 
