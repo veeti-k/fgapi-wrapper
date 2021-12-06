@@ -7,13 +7,17 @@ import { valid } from "../validation/index";
 
 const tenMin = 1000 * 60 * 10;
 
-export class Games {
+export class GameCache {
+  epic: EpicGamesCache;
+
   private freeGamesUpdatedAt: number;
   private freeGames: Array<Game>;
   private upGamesUpdatedAt: number;
   private upGames: Array<Game>;
 
   constructor(private settings: ApiSettings) {
+    this.epic = new EpicGamesCache(this.settings);
+
     this.freeGamesUpdatedAt = 0;
     this.freeGames = [];
     this.upGamesUpdatedAt = 0;
@@ -101,7 +105,7 @@ export class Games {
   }
 }
 
-export class Epic {
+export class EpicGamesCache {
   private freeGamesUpdatedAt: number;
   private freeGames: Array<Game>;
   private upGamesUpdatedAt: number;

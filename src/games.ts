@@ -3,7 +3,7 @@ import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { Game } from "./interfaces/Game";
 import { ApiSettings } from "./interfaces/ApiSettings";
-import { GameCache } from "./cache/index";
+import { EpicGamesCache, GameCache } from "./cache/games";
 
 export class Games {
   private cache: GameCache;
@@ -39,7 +39,7 @@ class GetEndpoints {
 
   constructor(private settings: ApiSettings, cache: GameCache) {
     this.cache = cache;
-    this.epic = new EpicGames(this.settings, this.cache);
+    this.epic = new EpicGames(this.settings, this.cache.epic);
   }
 
   /**
@@ -66,8 +66,8 @@ class GetEndpoints {
    * @returns An array of {@link Game} objects
    */
   async free(): Promise<Game[]> {
-    if (this.cache.games.hasFree()) {
-      return this.cache.games.free;
+    if (this.cache.hasFree()) {
+      return this.cache.free;
     }
 
     const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/free");
@@ -76,10 +76,10 @@ class GetEndpoints {
 
     try {
       games = (await axios(axiosConfig)).data;
-      this.cache.games.free = games;
+      this.cache.free = games;
     } catch (err: any) {
       apiErrorHandler(err);
-      return this.cache.games.free;
+      return this.cache.free;
     }
 
     return games;
@@ -90,8 +90,8 @@ class GetEndpoints {
    * @returns An array of {@link Game}
    */
   async upcoming(): Promise<Game[]> {
-    if (this.cache.games.hasUpcoming()) {
-      return this.cache.games.upcoming;
+    if (this.cache.hasUpcoming()) {
+      return this.cache.upcoming;
     }
 
     const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/up");
@@ -100,10 +100,10 @@ class GetEndpoints {
 
     try {
       games = (await axios(axiosConfig)).data;
-      this.cache.games.upcoming = games;
+      this.cache.upcoming = games;
     } catch (err: any) {
       apiErrorHandler(err);
-      return this.cache.games.upcoming;
+      return this.cache.upcoming;
     }
 
     return games;
@@ -129,9 +129,9 @@ class GetEndpoints {
 }
 
 class EpicGames {
-  private cache: GameCache;
+  private cache: EpicGamesCache;
 
-  constructor(private settings: ApiSettings, cache: GameCache) {
+  constructor(private settings: ApiSettings, cache: EpicGamesCache) {
     this.cache = cache;
   }
 
@@ -159,8 +159,8 @@ class EpicGames {
    * @returns An array of {@link Game} objects
    */
   async free(): Promise<Game[]> {
-    if (this.cache.games.hasFree()) {
-      return this.cache.games.free;
+    if (this.cache.hasFree()) {
+      return this.cache.free;
     }
 
     const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/free");
@@ -169,10 +169,10 @@ class EpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
-      this.cache.epic.free = games;
+      this.cache.free = games;
     } catch (err: any) {
       apiErrorHandler(err);
-      return this.cache.games.free;
+      return this.cache.free;
     }
 
     return games;
@@ -183,8 +183,8 @@ class EpicGames {
    * @returns An array of {@link Game}
    */
   async upcoming(): Promise<Game[]> {
-    if (this.cache.games.hasUpcoming()) {
-      return this.cache.games.upcoming;
+    if (this.cache.hasUpcoming()) {
+      return this.cache.upcoming;
     }
 
     const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/up");
@@ -193,10 +193,10 @@ class EpicGames {
 
     try {
       games = (await axios(axiosConfig)).data;
-      this.cache.epic.upcoming = games;
+      this.cache.upcoming = games;
     } catch (err: any) {
       apiErrorHandler(err);
-      return this.cache.games.upcoming;
+      return this.cache.upcoming;
     }
 
     return games;
