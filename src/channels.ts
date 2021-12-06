@@ -3,28 +3,23 @@ import { GuildTextBasedChannel } from "discord.js";
 import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
-import { ChannelOverwrites } from "./interfaces/ChannelOverwrites";
 
 export class Channels {
   constructor(private settings: ApiSettings) {}
 
-  async update(
-    oldChannel: GuildTextBasedChannel,
-    newChannel: GuildTextBasedChannel,
-    newChannelOverwrites: ChannelOverwrites,
-    ownerId: string
-  ) {
-    const axiosConfig = getAxiosConfig(this.settings, "POST", "/channels/update");
-
+  async update(newChannel: GuildTextBasedChannel, validPerms: boolean, missingPerms: string[]) {
     const data = {
-      old: oldChannel,
-      new: newChannel,
-      newOverwrites: newChannelOverwrites,
-      ownerId,
+      channelId: newChannel.id,
+      ownerId: newChannel.guild.ownerId,
+      missingPerms,
+      validPerms,
+      guildId: newChannel.guild.id,
     };
 
+    const axiosConfig = getAxiosConfig(this.settings, "POST", "/channels/update", data);
+
     try {
-      await axios.post(axiosConfig.url, data, axiosConfig);
+      await axios(axiosConfig);
     } catch (err: any) {
       apiErrorHandler(err);
     }

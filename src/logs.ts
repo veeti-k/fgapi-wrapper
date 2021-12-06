@@ -24,6 +24,7 @@ export class AddEndpoint {
 
     const command: Command = {
       name: interaction.commandName,
+      botId: interaction.client.user!.id,
       sender: {
         tag: interaction.user.tag,
         id: interaction.user.id,

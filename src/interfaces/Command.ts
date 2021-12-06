@@ -1,5 +1,6 @@
 export interface Command {
   name: string;
+  botId: string;
   sender: {
     tag: string;
     id: string;

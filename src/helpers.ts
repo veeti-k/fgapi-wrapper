@@ -1,5 +1,5 @@
 import { Guild } from "discord.js";
-import { APIGuild } from "./interfaces/ApiGuild";
+import { APIGuild } from "./interfaces/APIGuild";
 
 export const APIGuildFromGuild = (guild: Guild): APIGuild => {
   return {

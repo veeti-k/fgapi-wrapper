@@ -18,6 +18,7 @@ export default (command: Command) => {
 
 const validateProps = (command: Command) => {
   if (!command.name) return "'name' was not provided";
+  if (!command.botId) return "'botId' was not provided";
 
   if (!command.guild) return "'guild' was not provided";
   if (!command.guild.id) return "'guild.id' was not provided";
@@ -30,6 +31,7 @@ const validateProps = (command: Command) => {
 
 const validatePropTypes = (command: Command) => {
   if (typeof command.name !== "string") return "'name' must be the type of string";
+  if (typeof command.botId !== "string") return "'botId' must be the type of string";
 
   if (typeof command.guild.id !== "string") return "'guild.id' must be the type of string";
   if (typeof command.guild.name !== "string") return "'guild.name' must be the type of string";
