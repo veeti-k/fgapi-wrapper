@@ -3,7 +3,7 @@ import { Guild } from "discord.js";
 import { getAxiosConfig } from "./config";
 import { APIGuildFromGuild } from "./helpers";
 import { ApiSettings } from "./interfaces/ApiSettings";
-import { SetChGuild } from "./interfaces/Guild";
+import { DBGuild, SetChDBGuild } from "./interfaces/Guilds";
 
 export class GuildEndpoint {
   set: SetEndpoints;
@@ -123,7 +123,7 @@ class GetEndpoints {
    * @description Gets all the bot's guilds
    * @returns An array of {@link Guild}
    */
-  async all(): Promise<Guild[]> {
+  async all(): Promise<DBGuild[]> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds`);
 
     const guild = (await axios(axiosConfig)).data;
@@ -136,7 +136,7 @@ class GetEndpoints {
    * @param guildId The id of the guild to get
    * @returns A {@link Guild} or null if guild not found
    */
-  async one(guildId: string): Promise<Guild> {
+  async one(guildId: string): Promise<DBGuild> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/${guildId}`);
 
     const guild = (await axios(axiosConfig)).data;
@@ -148,7 +148,7 @@ class GetEndpoints {
    * @description Gets all of the bot's guilds that have set a channel
    * @returns An array of {@link SetChGuild}
    */
-  async setCh(): Promise<SetChGuild[]> {
+  async setCh(): Promise<SetChDBGuild[]> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/setch`);
 
     const guild = (await axios(axiosConfig)).data;
