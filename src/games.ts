@@ -140,7 +140,7 @@ class EpicGames {
    * @returns An array of {@link Game}
    */
   async all(): Promise<Game[]> {
-    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games");
+    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/epic");
 
     let games: Game[] = [];
 
@@ -163,7 +163,7 @@ class EpicGames {
       return this.cache.free;
     }
 
-    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/free");
+    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/epic/free");
 
     let games: Game[] = [];
 
@@ -187,7 +187,7 @@ class EpicGames {
       return this.cache.upcoming;
     }
 
-    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/up");
+    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/epic/up");
 
     let games: Game[] = [];
 
@@ -207,7 +207,7 @@ class EpicGames {
    * @returns The time as a string
    */
   async timeUntilNext(): Promise<string> {
-    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/untilnext");
+    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/epic/untilnext");
 
     let time = "";
 
