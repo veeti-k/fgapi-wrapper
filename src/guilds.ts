@@ -1,7 +1,5 @@
 import axios from "axios";
-import { Guild } from "discord.js";
 import { getAxiosConfig } from "./config";
-import { APIGuildFromGuild } from "./helpers";
 import { ApiSettings } from "./interfaces/ApiSettings";
 import { DBGuild, SetChDBGuild } from "./interfaces/Guilds";
 
@@ -20,46 +18,46 @@ export class GuildEndpoint {
 class SetEndpoints {
   constructor(private settings: ApiSettings) {}
 
-  async channel(guild: Guild, channelId: string) {
+  async channel(guildId: string, channelId: string) {
     const data = {
       channelId,
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guild.id}/channel`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/channel`, data);
 
     await axios(axiosConfig);
   }
 
-  async role(guild: Guild, roleId: string) {
+  async role(guildId: string, roleId: string) {
     const data = {
       roleId,
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guild.id}/role`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/role`, data);
 
     await axios(axiosConfig);
   }
 
-  async emoji(guild: Guild, emoji: string) {
+  async emoji(guildId: string, emoji: string) {
     const data = {
       emoji,
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guild.id}/emoji`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/emoji`, data);
 
     await axios(axiosConfig);
   }
 
-  async language(guild: Guild, language: string) {
+  async language(guildId: string, language: string) {
     const data = {
       language,
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guild.id}/emoji`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/language`, data);
 
     await axios(axiosConfig);
   }
@@ -72,37 +70,32 @@ REMOVE
 class RemoveEndPoints {
   constructor(private settings: ApiSettings) {}
 
-  async channel(guild: Guild) {
+  async channel(guildId: string) {
     const data = {
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(
-      this.settings,
-      "DELETE",
-      `/guilds/${guild.id}/channel`,
-      data
-    );
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/channel`, data);
 
     await axios(axiosConfig);
   }
 
-  async role(guild: Guild) {
+  async role(guildId: string) {
     const data = {
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guild.id}/role`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/role`, data);
 
     await axios(axiosConfig);
   }
 
-  async emoji(guild: Guild) {
+  async emoji(guildId: string) {
     const data = {
-      guild: APIGuildFromGuild(guild),
+      guildId,
     };
 
-    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guild.id}/emoji`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/emoji`, data);
 
     await axios(axiosConfig);
   }

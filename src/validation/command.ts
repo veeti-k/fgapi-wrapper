@@ -18,27 +18,19 @@ export default (command: Command) => {
 
 const validateProps = (command: Command) => {
   if (!command.name) return "'name' was not provided";
-  if (!command.botId) return "'botId' was not provided";
+  if (!command.guildId) return "'guildId' was not provided";
+  if (!command.user) return "'user' was not provided";
 
-  if (!command.guild) return "'guild' was not provided";
-  if (!command.guild.id) return "'guild.id' was not provided";
-  if (!command.guild.memberCount) return "'guild.memberCount' was not provided";
-  if (!command.guild.name) return "'guild.name' was not provided";
-  if (!command.guild.owner) return "'guild.owner' was not provided";
-  if (!command.guild.owner.id) return "'guild.owner.id' was not provided";
-  if (!command.guild.owner.tag) return "'guild.owner.id' was not provided";
+  if (!command.user.id) return "'user.id' was not provided";
+  if (!command.user.locale) return "'user.locale' was not provided";
+  if (!command.user.tag) return "'user.tag' was not provided";
 };
 
 const validatePropTypes = (command: Command) => {
   if (typeof command.name !== "string") return "'name' must be the type of string";
-  if (typeof command.botId !== "string") return "'botId' must be the type of string";
+  if (typeof command.guildId !== "string") return "'botId' must be the type of string";
 
-  if (typeof command.guild.id !== "string") return "'guild.id' must be the type of string";
-  if (typeof command.guild.name !== "string") return "'guild.name' must be the type of string";
-  if (typeof command.guild.memberCount !== "number")
-    return "'guild.memberCount' must be the type of number";
-  if (typeof command.guild.owner.id !== "string")
-    return "'guild.owner.id' must be the type of string";
-  if (typeof command.guild.owner.tag !== "string")
-    return "'guild.owner.tag' must be the type of string";
+  if (typeof command.user.id !== "string") return "'user.id' must be the type of string";
+  if (typeof command.user.locale !== "string") return "'user.locale' must be the type of string";
+  if (typeof command.user.tag !== "string") return "'user.tag' must be the type of string";
 };
