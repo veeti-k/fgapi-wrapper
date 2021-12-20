@@ -15,6 +15,24 @@ export class GuildEndpoint {
     this.get = new GetEndpoints(this.settings);
     this.remove = new RemoveEndPoints(this.settings);
   }
+
+  /**
+   * @returns The created {@link DBGuild}
+   */
+  async create(guildId: string): Promise<DBGuild | null> {
+    const data = {
+      guildId,
+    };
+
+    try {
+      const res = await axios(getAxiosConfig(this.settings, "POST", "/guilds", data));
+
+      return res.data;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
+  }
 }
 
 class SetEndpoints {
