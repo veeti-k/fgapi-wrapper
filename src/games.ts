@@ -140,7 +140,7 @@ class EpicGames {
    * @returns An array of {@link Game}
    */
   async all(): Promise<Game[]> {
-    const axiosConfig = getAxiosConfig(this.settings, "GET", "/games/epic");
+    const axiosConfig = getAxiosConfig(this.settings, "GET", "/epic/games");
 
     let games: Game[] = [];
 

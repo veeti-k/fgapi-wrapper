@@ -1,7 +1,9 @@
 import axios from "axios";
 import { getAxiosConfig } from "./config";
+import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
 import { DBGuild, SetChDBGuild } from "./interfaces/Guilds";
+import { Webhook } from "./interfaces/Webhook";
 
 export class GuildEndpoint {
   set: SetEndpoints;
@@ -18,18 +20,31 @@ export class GuildEndpoint {
 class SetEndpoints {
   constructor(private settings: ApiSettings) {}
 
-  async channel(guildId: string, channelId: string) {
+  /**
+   * @returns The updated {@link DBGuild}
+   */
+  async channel(guildId: string, channelId: string, webhook: Webhook): Promise<DBGuild | null> {
     const data = {
       channelId,
       guildId,
+      webhook,
     };
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/channel`, data);
 
-    await axios(axiosConfig);
+    try {
+      const res = await axios(axiosConfig);
+      return res.data as unknown as DBGuild;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
-  async role(guildId: string, roleId: string) {
+  /**
+   * @returns The updated {@link DBGuild}
+   */
+  async role(guildId: string, roleId: string): Promise<DBGuild | null> {
     const data = {
       roleId,
       guildId,
@@ -37,7 +52,13 @@ class SetEndpoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/role`, data);
 
-    await axios(axiosConfig);
+    try {
+      const res = await axios(axiosConfig);
+      return res.data as unknown as DBGuild;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   async emoji(guildId: string, emoji: string) {
@@ -48,7 +69,11 @@ class SetEndpoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/emoji`, data);
 
-    await axios(axiosConfig);
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
   }
 
   async language(guildId: string, language: string) {
@@ -59,7 +84,11 @@ class SetEndpoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/language`, data);
 
-    await axios(axiosConfig);
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
   }
 }
 
@@ -77,7 +106,11 @@ class RemoveEndPoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/channel`, data);
 
-    await axios(axiosConfig);
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
   }
 
   async role(guildId: string) {
@@ -87,7 +120,11 @@ class RemoveEndPoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/role`, data);
 
-    await axios(axiosConfig);
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
   }
 
   async emoji(guildId: string) {
@@ -97,7 +134,11 @@ class RemoveEndPoints {
 
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/emoji`, data);
 
-    await axios(axiosConfig);
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
   }
 }
 
@@ -116,37 +157,49 @@ class GetEndpoints {
    * @description Gets all the bot's guilds
    * @returns An array of {@link Guild}
    */
-  async all(): Promise<DBGuild[]> {
+  async all(): Promise<DBGuild[] | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const guilds = (await axios(axiosConfig)).data;
+      return guilds;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   /**
    * @description Gets a guild with it's id
    * @param guildId The id of the guild to get
-   * @returns A {@link Guild} or null if guild not found
+   * @returns A {@link Guild}
    */
-  async one(guildId: string): Promise<DBGuild> {
+  async one(guildId: string): Promise<DBGuild | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/${guildId}`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const guild = (await axios(axiosConfig)).data;
+      return guild;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   /**
    * @description Gets all of the bot's guilds that have set a channel
    * @returns An array of {@link SetChGuild}
    */
-  async setCh(): Promise<SetChDBGuild[]> {
+  async setCh(): Promise<SetChDBGuild[] | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/setch`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const guilds = (await axios(axiosConfig)).data;
+      return guilds;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 }
 
@@ -157,47 +210,63 @@ class GuildCountEndPoints {
    * @description Gets the count of the bot's guilds
    * @returns The guild count as number
    */
-  async guildCount(): Promise<number> {
+  async guildCount(): Promise<number | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/count`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const count = (await axios(axiosConfig)).data;
+      return count;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   /**
    * @description Gets the count of the guilds that have not set a channel
    * @returns The count as a number
    */
-  async noChCount(): Promise<number> {
+  async noChCount(): Promise<number | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/noch/count`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const count = (await axios(axiosConfig)).data;
+      return count;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   /**
    * @description Gets the count of the guilds that have not set a role
    * @returns The count as a number
    */
-  async noRoleCount(): Promise<number> {
+  async noRoleCount(): Promise<number | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/norole/count`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const count = (await axios(axiosConfig)).data;
+      return count;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 
   /**
    * @description Gets the count of guilds that have not set an emoji
    * @returns The count as a number
    */
-  async noEmojiCount(): Promise<number> {
+  async noEmojiCount(): Promise<number | null> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/noemoji/coint`);
 
-    const guild = (await axios(axiosConfig)).data;
-
-    return guild;
+    try {
+      const count = (await axios(axiosConfig)).data;
+      return count;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
   }
 }
