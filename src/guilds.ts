@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
-import { DBGuild, SetChDBGuild } from "./interfaces/Guilds";
+import { DBGuild, SetChDBGuild, SetWhDBGuild } from "./interfaces/Guilds";
 import { Webhook } from "./interfaces/Webhook";
 
 export class GuildEndpoint {
@@ -108,6 +108,20 @@ class SetEndpoints {
       apiErrorHandler(err);
     }
   }
+
+  async webhook(guildId: string, webhook: Webhook) {
+    const data = {
+      webhook,
+    };
+
+    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/webhook`, data);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
 }
 
 /* 
@@ -117,7 +131,10 @@ REMOVE
 class RemoveEndPoints {
   constructor(private settings: ApiSettings) {}
 
-  async channel(guildId: string) {
+  /**
+   * @returns The old {@link DBGuild} before the removing
+   */
+  async channel(guildId: string): Promise<DBGuild | null> {
     const data = {
       guildId,
     };
@@ -125,9 +142,11 @@ class RemoveEndPoints {
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/channel`, data);
 
     try {
-      await axios(axiosConfig);
+      const res = await axios(axiosConfig);
+      return res.data;
     } catch (err: any) {
       apiErrorHandler(err);
+      return null;
     }
   }
 
@@ -151,6 +170,16 @@ class RemoveEndPoints {
     };
 
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/emoji`, data);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
+
+  async webhook(guildId: string) {
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/webhook`);
 
     try {
       await axios(axiosConfig);
@@ -198,6 +227,22 @@ class GetEndpoints {
     try {
       const guild = (await axios(axiosConfig)).data;
       return guild;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return null;
+    }
+  }
+
+  /**
+   * @description Gets all of the bot's guilds that have a set webhook
+   * @returns An array of {@link SetWhDBGuild}
+   */
+  async setWebhook(): Promise<SetWhDBGuild[] | null> {
+    const axiosConfig = getAxiosConfig(this.settings, "GET", `/guilds/webhook`);
+
+    try {
+      const guilds = (await axios(axiosConfig)).data;
+      return guilds;
     } catch (err: any) {
       apiErrorHandler(err);
       return null;

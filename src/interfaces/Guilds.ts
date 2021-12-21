@@ -1,3 +1,5 @@
+import { Webhook } from "./Webhook";
+
 export interface APILogGuild {
   name: string;
   id: string;
@@ -12,8 +14,14 @@ export interface DBGuild {
   channelId: string | null;
   emoji: string | null;
   language: string;
+  webhook: Webhook | null;
 }
 
 export interface SetChDBGuild extends DBGuild {
+  channelId: string;
+}
+
+export interface SetWhDBGuild extends DBGuild {
+  webhook: Webhook;
   channelId: string;
 }

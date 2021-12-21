@@ -3,4 +3,5 @@ export interface Webhook {
   token: string;
   channelId: string;
   url: string;
+  userId: string;
 }
