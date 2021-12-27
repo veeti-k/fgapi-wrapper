@@ -3,6 +3,7 @@ import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
 import { Command } from "./interfaces/Command";
+import { SendsLog } from "./interfaces/SendsLog";
 import { User } from "./interfaces/User";
 import { valid } from "./validation/index";
 
@@ -27,6 +28,16 @@ export class AddEndpoint {
     if (!valid.log.command(command)) return;
 
     const axiosConfig = getAxiosConfig(this.settings, "POST", "/logs/cmd", command);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
+
+  async sends(log: SendsLog) {
+    const axiosConfig = getAxiosConfig(this.settings, "POST", "/logs/sends", log);
 
     try {
       await axios(axiosConfig);
