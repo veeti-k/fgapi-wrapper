@@ -8,14 +8,16 @@ import { User } from "./interfaces/User";
 import { valid } from "./validation/index";
 
 export class Logs {
-  add: AddEndpoint;
+  add: AddEndpoints;
+  get: GetEndpoints;
 
   constructor(private settings: ApiSettings) {
-    this.add = new AddEndpoint(this.settings);
+    this.add = new AddEndpoints(this.settings);
+    this.get = new GetEndpoints(this.settings);
   }
 }
 
-export class AddEndpoint {
+export class AddEndpoints {
   constructor(private settings: ApiSettings) {}
 
   async command(commandName: string, user: User, guildId: string) {
@@ -41,6 +43,24 @@ export class AddEndpoint {
 
     try {
       await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
+}
+
+export class GetEndpoints {
+  constructor(private settings: ApiSettings) {}
+
+  /*
+   * Gets the logs for a specific logId, these are the guilds that the game has sent to already.
+   */
+  async sends(logId: string) {
+    const axiosConfig = getAxiosConfig(this.settings, "GET", `/logs/sends/${logId}`);
+
+    try {
+      const response = await axios(axiosConfig);
+      return response.data;
     } catch (err: any) {
       apiErrorHandler(err);
     }
