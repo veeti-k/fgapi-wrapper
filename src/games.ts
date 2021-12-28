@@ -203,6 +203,22 @@ class EpicGames {
   }
 
   /**
+   * Get a game by it's ids (Epic Games Store)
+   * @returns A {@link Game}
+   */
+  async gamesByIds(gameIds: string[]): Promise<Game[]> {
+    const axiosConfig = getAxiosConfig(this.settings, "GET", `/games/epic/ids`, { gameIds });
+
+    try {
+      const games = (await axios(axiosConfig)).data;
+      return games;
+    } catch (err: any) {
+      apiErrorHandler(err);
+      return [];
+    }
+  }
+
+  /**
    * Gets the time until the next game on the Epic Games Store
    * @returns The time as a string
    */
