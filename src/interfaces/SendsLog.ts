@@ -1,6 +1,6 @@
 export interface SendsLog {
   guildId: string;
-  game: string;
+  logId: string;
   result: {
     sent: boolean;
     reason: string | null;
