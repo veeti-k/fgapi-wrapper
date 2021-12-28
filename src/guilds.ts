@@ -187,6 +187,16 @@ class RemoveEndPoints {
       apiErrorHandler(err);
     }
   }
+
+  async guild(guildId: string) {
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}`);
+
+    try {
+      await axios(axiosConfig);
+    } catch (err: any) {
+      apiErrorHandler(err);
+    }
+  }
 }
 
 /*
