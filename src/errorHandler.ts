@@ -1,4 +1,6 @@
 export const apiErrorHandler = (err: any) => {
+  if (!err.response) return console.log(new Error(`Api error. No response`));
+
   if (err.response.status === 502) return console.log(new Error("Api error. Api is offline."));
 
   if (err.response.status === 403)
