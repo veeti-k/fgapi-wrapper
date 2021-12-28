@@ -5,6 +5,7 @@ export interface Game {
   end: number;
   sent: boolean;
   confirmed: boolean;
+  slug: string;
   store: {
     name: string;
     url: string;
