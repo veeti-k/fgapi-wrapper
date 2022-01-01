@@ -1,9 +1,9 @@
 import axios from "axios";
+import { Webhook } from "discord.js";
 import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
 import { DBGuild, SetChDBGuild, SetWhDBGuild } from "./interfaces/Guilds";
-import { Webhook } from "./interfaces/Webhook";
 
 export class GuildEndpoint {
   set: SetEndpoints;
@@ -45,7 +45,12 @@ class SetEndpoints {
     const data = {
       channelId,
       guildId,
-      webhook,
+      webhook: {
+        id: webhook.id,
+        token: webhook.token,
+        userId: webhook.owner!.id, // will always be the bot
+        channelId: webhook.channelId,
+      },
     };
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/channel`, data);

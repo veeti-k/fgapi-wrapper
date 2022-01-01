@@ -52,17 +52,19 @@ export class AddEndpoints {
 export class GetEndpoints {
   constructor(private settings: ApiSettings) {}
 
-  /*
+  /**
    * Gets the logs for a specific logId, these are the guilds that the game has sent to already.
    */
-  async sends(logId: string) {
+  async sends(logId: string): Promise<SendsLog[]> {
     const axiosConfig = getAxiosConfig(this.settings, "GET", `/logs/sends/${logId}`);
 
     try {
       const response = await axios(axiosConfig);
+
       return response.data;
     } catch (err: any) {
       apiErrorHandler(err);
+      return [];
     }
   }
 }
