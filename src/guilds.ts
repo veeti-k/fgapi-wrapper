@@ -17,15 +17,12 @@ export class GuildEndpoint {
   }
 
   /**
+   * Create a guild
    * @returns The created {@link DBGuild}
    */
-  async create(guildId: string): Promise<DBGuild | null> {
-    const data = {
-      guildId,
-    };
-
+  async create(guild: DBGuild): Promise<DBGuild | null> {
     try {
-      const res = await axios(getAxiosConfig(this.settings, "POST", "/guilds", data));
+      const res = await axios(getAxiosConfig(this.settings, "POST", "/guilds", guild));
 
       return res.data;
     } catch (err: any) {
@@ -39,12 +36,12 @@ class SetEndpoints {
   constructor(private settings: ApiSettings) {}
 
   /**
+   * Set a guild's channel
    * @returns The updated {@link DBGuild}
    */
   async channel(guildId: string, channelId: string, webhook: Webhook): Promise<DBGuild | null> {
     const data = {
       channelId,
-      guildId,
       webhook: {
         id: webhook.id,
         token: webhook.token,
@@ -65,12 +62,12 @@ class SetEndpoints {
   }
 
   /**
+   * Set a guild's role
    * @returns The updated {@link DBGuild}
    */
   async role(guildId: string, roleId: string): Promise<DBGuild | null> {
     const data = {
       roleId,
-      guildId,
     };
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/role`, data);
@@ -84,25 +81,13 @@ class SetEndpoints {
     }
   }
 
-  async emoji(guildId: string, emoji: string) {
-    const data = {
-      emoji,
-      guildId,
-    };
-
-    const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/emoji`, data);
-
-    try {
-      await axios(axiosConfig);
-    } catch (err: any) {
-      apiErrorHandler(err);
-    }
-  }
-
+  /**
+   * Set a guild's language
+   * @returns The updated {@link DBGuild}
+   */
   async language(guildId: string, language: string) {
     const data = {
       language,
-      guildId,
     };
 
     const axiosConfig = getAxiosConfig(this.settings, "PATCH", `/guilds/${guildId}/language`, data);
@@ -114,6 +99,10 @@ class SetEndpoints {
     }
   }
 
+  /**
+   * Set a guild's webhook
+   * @returns The updated {@link DBGuild}
+   */
   async webhook(guildId: string, webhook: Webhook) {
     const data = {
       webhook,
@@ -137,14 +126,11 @@ class RemoveEndPoints {
   constructor(private settings: ApiSettings) {}
 
   /**
+   * Remove a guild's channel
    * @returns The old {@link DBGuild} before the removing
    */
   async channel(guildId: string): Promise<DBGuild | null> {
-    const data = {
-      guildId,
-    };
-
-    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/channel`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/channel`);
 
     try {
       const res = await axios(axiosConfig);
@@ -155,12 +141,11 @@ class RemoveEndPoints {
     }
   }
 
+  /**
+   * Remove a guild's role
+   */
   async role(guildId: string) {
-    const data = {
-      guildId,
-    };
-
-    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/role`, data);
+    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/role`);
 
     try {
       await axios(axiosConfig);
@@ -169,20 +154,9 @@ class RemoveEndPoints {
     }
   }
 
-  async emoji(guildId: string) {
-    const data = {
-      guildId,
-    };
-
-    const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/emoji`, data);
-
-    try {
-      await axios(axiosConfig);
-    } catch (err: any) {
-      apiErrorHandler(err);
-    }
-  }
-
+  /**
+   * Remove a guild's webhook
+   */
   async webhook(guildId: string) {
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}/webhook`);
 
@@ -193,6 +167,9 @@ class RemoveEndPoints {
     }
   }
 
+  /**
+   * Remove a guild
+   */
   async guild(guildId: string) {
     const axiosConfig = getAxiosConfig(this.settings, "DELETE", `/guilds/${guildId}`);
 

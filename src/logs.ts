@@ -2,10 +2,8 @@ import axios from "axios";
 import { getAxiosConfig } from "./config";
 import { apiErrorHandler } from "./errorHandler";
 import { ApiSettings } from "./interfaces/ApiSettings";
-import { Command } from "./interfaces/Command";
+import { CommandLog } from "./interfaces/CommandLog";
 import { SendsLog } from "./interfaces/SendsLog";
-import { User } from "./interfaces/User";
-import { valid } from "./validation/index";
 
 export class Logs {
   add: AddEndpoints;
@@ -20,16 +18,8 @@ export class Logs {
 export class AddEndpoints {
   constructor(private settings: ApiSettings) {}
 
-  async command(commandName: string, user: User, guildId: string) {
-    const command: Command = {
-      name: commandName,
-      user,
-      guildId,
-    };
-
-    if (!valid.log.command(command)) return;
-
-    const axiosConfig = getAxiosConfig(this.settings, "POST", "/logs/cmd", command);
+  async command(log: CommandLog) {
+    const axiosConfig = getAxiosConfig(this.settings, "POST", "/logs/cmd", log);
 
     try {
       await axios(axiosConfig);

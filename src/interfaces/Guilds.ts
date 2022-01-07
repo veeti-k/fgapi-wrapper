@@ -12,7 +12,6 @@ export interface DBGuild {
   guildId: string;
   roleId: string | null;
   channelId: string | null;
-  emoji: string | null;
   language: string;
   webhook: Webhook | null;
 }
