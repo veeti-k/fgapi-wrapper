@@ -19,11 +19,7 @@ export class Games {
    * @param game The {@link Game} to save
    */
   async save(game: Game): Promise<void> {
-    const body: Game = {
-      ...game,
-    };
-
-    const axiosConfig = getAxiosConfig(this.settings, "POST", "/games", body);
+    const axiosConfig = getAxiosConfig(this.settings, "POST", "/games", game);
 
     try {
       await axios(axiosConfig);
